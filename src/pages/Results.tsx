@@ -31,14 +31,14 @@ type ChatStyle = 'playful' | 'natural' | 'passionate';
 
 const Results: React.FC = () => {
   const navigate = useNavigate();
-  const {
+  const { 
     mbtiType,
     selectedScene,
     toneSettings,
     contextInput,
     setMbtiType,
   } = useAppContext();
-
+  
   // 多轮对话消息流
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -597,7 +597,7 @@ const Results: React.FC = () => {
       default: return 'from-purple-500/25 to-blue-500/25';
     }
   };
-
+  
   return (
     <div className="max-w-4xl mx-auto min-h-screen py-10 px-6 lg:px-0 space-y-16 lg:space-y-12 sm:space-y-8">
       {/* Header 模块 */}
@@ -631,7 +631,7 @@ const Results: React.FC = () => {
               {msg.role === 'user' ? (
                 <div className="max-w-[80%] px-4 py-3 rounded-2xl bg-gradient-to-r from-purple-500/90 to-blue-500/90 text-white shadow-xl border border-white/20 text-sm">
                   {msg.content}
-                </div>
+      </div>
               ) : (
                 <div className="max-w-full">
                   {msg.styleCards ? (
@@ -650,8 +650,8 @@ const Results: React.FC = () => {
                               <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center">
                                   <h3 className="font-semibold text-white text-sm">{card.title}</h3>
-                                </div>
-                                
+      </div>
+      
                                 {/* 操作按钮组 */}
                                 <div className={`flex gap-1 transition-opacity duration-200 ${showButtons[card.id] ? 'opacity-100' : 'opacity-60 lg:opacity-60 lg:group-hover:opacity-100'}`}>
                                   <button 
@@ -727,7 +727,7 @@ const Results: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
           <span className="text-purple-300 text-sm font-medium">回复模式：</span>
           <div className="flex gap-2">
-            <button
+                    <button 
               onClick={() => setReplyMode('card')}
               className={`px-4 py-2 rounded-lg text-sm transition-all ${
                 replyMode === 'card'
@@ -738,8 +738,8 @@ const Results: React.FC = () => {
             >
               <Layout className="w-4 h-4 inline mr-2" />
               卡片式
-            </button>
-            <button
+                    </button>
+                    <button 
               onClick={() => setReplyMode('chat')}
               className={`px-4 py-2 rounded-lg text-sm transition-all ${
                 replyMode === 'chat'
@@ -750,9 +750,9 @@ const Results: React.FC = () => {
             >
               <MessageSquare className="w-4 h-4 inline mr-2" />
               聊天式
-            </button>
-          </div>
-
+                    </button>
+                  </div>
+                  
           {replyMode === 'chat' && (
             <div className="flex gap-2 ml-0 sm:ml-4">
               <span className="text-purple-300 text-sm">风格：</span>
@@ -761,7 +761,7 @@ const Results: React.FC = () => {
                 { key: 'natural', label: '自然' },
                 { key: 'passionate', label: '激动' }
               ].map(style => (
-                <button
+                    <button 
                   key={style.key}
                   onClick={() => setSelectedChatStyle(style.key as ChatStyle)}
                   className={`px-3 py-1 rounded text-xs transition-all ${
@@ -771,7 +771,7 @@ const Results: React.FC = () => {
                   }`}
                 >
                   {style.label}
-                </button>
+                    </button>
               ))}
             </div>
           )}
@@ -805,10 +805,10 @@ const Results: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
-          </div>
-        </div>
+                  </div>
+                </div>
       </div>
-
+      
       {/* 输入区域 */}
       <div className="space-y-4 max-w-2xl mx-auto">
         <form className="flex flex-col sm:flex-row gap-3" onSubmit={e => { e.preventDefault(); handleSend(); }}>
@@ -842,21 +842,21 @@ const Results: React.FC = () => {
         
         {/* 底部返回按钮 */}
         <div className="flex justify-center gap-4 pt-4">
-          <Button
-            type="secondary"
+        <Button 
+          type="secondary" 
             onClick={() => navigate('/input-context')}
-            icon={<ArrowLeft className="w-4 h-4" />}
+          icon={<ArrowLeft className="w-4 h-4" />}
             className="px-6 py-2 transition-all hover:scale-105"
-          >
-            返回
-          </Button>
-          <Button
+        >
+          返回
+        </Button>
+        <Button 
             type="secondary"
             onClick={() => {localStorage.removeItem('currentUser'); navigate('/login');}}
             className="px-6 py-2 transition-all hover:scale-105"
           >
             回到登录
-          </Button>
+        </Button>
         </div>
       </div>
     </div>
