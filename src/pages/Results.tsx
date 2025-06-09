@@ -599,24 +599,24 @@ const Results: React.FC = () => {
   };
   
   return (
-    <div className="max-w-4xl mx-auto min-h-screen py-10 px-6 lg:px-0 space-y-16 lg:space-y-12 sm:space-y-8">
+    <div className="max-w-4xl mx-auto min-h-screen py-4 md:py-6 lg:py-10 px-3 md:px-6 lg:px-0 space-y-6 md:space-y-8 lg:space-y-16">
       {/* Header 模块 */}
-      <header className="text-center space-y-4 animate-fadeDown">
-        <div className="space-y-2">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' }}>
+      <header className="text-center space-y-2 md:space-y-4 animate-fadeDown">
+        <div className="space-y-1 md:space-y-2">
+          <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' }}>
           像自己"又"比自己更会说
           </h1>
-          <h2 className="text-lg text-white/90" style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.6)' }}>
+          <h2 className="text-sm md:text-base lg:text-lg text-white/90" style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.6)' }}>
             基于 {mbtiType} 性格特质 · {scenes.find(s => s.id === selectedScene)?.title || '日常表达'} 场景
           </h2>
         </div>
       </header>
 
-      {/* 对话窗格 - 按需求文档设计 */}
+      {/* 对话窗格 - 响应式设计 */}
       <div className="flex justify-center">
         <div 
           ref={chatContainerRef}
-          className="relative bg-gradient-to-br from-purple-900/60 to-indigo-900/40 rounded-3xl p-6 border-2 border-white/20 backdrop-blur-lg shadow-2xl shadow-purple-800/50 overflow-y-auto w-[820px] h-[430px] max-w-full max-h-[80vh]"
+          className="relative bg-gradient-to-br from-purple-900/60 to-indigo-900/40 rounded-xl md:rounded-2xl lg:rounded-3xl p-3 md:p-4 lg:p-6 border border-white/20 md:border-2 backdrop-blur-lg shadow-xl md:shadow-2xl shadow-purple-800/50 overflow-y-auto w-full max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-5xl h-[300px] md:h-[400px] lg:h-[430px]"
           style={{
             position: 'relative',
             scrollbarWidth: 'thin',
@@ -627,63 +627,63 @@ const Results: React.FC = () => {
           <div className="absolute inset-x-0 top-0 h-px bg-white/10"></div>
           
           {messages.map(msg => (
-            <div key={msg.id} className={`mb-6 ${msg.role === 'user' ? 'flex justify-end' : ''}`}>
+            <div key={msg.id} className={`mb-3 md:mb-4 lg:mb-6 ${msg.role === 'user' ? 'flex justify-end' : ''}`}>
               {msg.role === 'user' ? (
-                <div className="max-w-[80%] px-4 py-3 rounded-2xl bg-gradient-to-r from-purple-500/90 to-blue-500/90 text-white shadow-xl border border-white/20 text-sm">
+                <div className="max-w-[85%] md:max-w-[80%] px-3 md:px-4 py-2 md:py-3 rounded-xl md:rounded-2xl bg-gradient-to-r from-purple-500/90 to-blue-500/90 text-white shadow-lg md:shadow-xl border border-white/20 text-xs md:text-sm">
                   {msg.content}
       </div>
               ) : (
                 <div className="max-w-full">
                   {msg.styleCards ? (
                     <>
-                      <div className="mb-4 text-purple-200 font-medium text-sm">{msg.content}</div>
+                      <div className="mb-2 md:mb-4 text-purple-200 font-medium text-xs md:text-sm">{msg.content}</div>
                       
-                      {/* StyleCard 网格 - 响应式设计 */}
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                      {/* StyleCard 网格 - 移动优先响应式设计 */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3 lg:gap-4">
                         {msg.styleCards.map(card => (
                           <div key={card.id} className="group relative">
                             <div 
-                              className={`flex flex-col h-full p-6 rounded-2xl bg-gradient-to-br ${getCardGradient(card.intensity)} backdrop-blur-lg border-2 border-white/15 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-200 cursor-pointer`}
+                              className={`flex flex-col h-full p-3 md:p-4 lg:p-6 rounded-lg md:rounded-xl lg:rounded-2xl bg-gradient-to-br ${getCardGradient(card.intensity)} backdrop-blur-lg border border-white/15 md:border-2 shadow-lg md:shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-200 cursor-pointer`}
                               onClick={() => toggleButtons(card.id)}
                             >
                               {/* 头部 Bar */}
-                              <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center justify-between mb-2 md:mb-3 lg:mb-4">
                                 <div className="flex items-center">
-                                  <h3 className="font-semibold text-white text-sm">{card.title}</h3>
+                                  <h3 className="font-semibold text-white text-xs md:text-sm lg:text-base">{card.title}</h3>
       </div>
       
                                 {/* 操作按钮组 */}
-                                <div className={`flex gap-1 transition-opacity duration-200 ${showButtons[card.id] ? 'opacity-100' : 'opacity-60 lg:opacity-60 lg:group-hover:opacity-100'}`}>
+                                <div className={`flex gap-1 transition-opacity duration-200 ${showButtons[card.id] ? 'opacity-100' : 'opacity-100 md:opacity-60 lg:group-hover:opacity-100'}`}>
                                   <button 
                                     onClick={e => {e.stopPropagation(); handleCopy(card.content, card.id);}} 
-                                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-200" 
+                                    className="p-1.5 md:p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-200" 
                                     title="复制内容"
                                     aria-label="复制内容"
                                   >
                                     {copiedId === card.id ? (
-                                      <div className="w-3 h-3 text-green-300 font-bold text-xs">✓</div>
+                                      <div className="w-2.5 h-2.5 md:w-3 md:h-3 text-green-300 font-bold text-xs">✓</div>
                                     ) : (
-                                      <Copy className="w-3 h-3 text-white" />
+                                      <Copy className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
                                     )}
                                   </button>
                                   <button 
-                                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-200" 
+                                    className="p-1.5 md:p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-200" 
                                     title="收藏表达"
                                     aria-label="收藏表达"
                                   >
-                                    <Heart className="w-3 h-3 text-white" />
+                                    <Heart className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
                                   </button>
                                 </div>
                               </div>
                               
                               {/* 正文区域 */}
-                              <div className="flex-1 overflow-y-auto text-sm leading-relaxed text-white break-words max-h-32 mb-4">
+                              <div className="flex-1 overflow-y-auto text-xs md:text-sm leading-relaxed text-white break-words max-h-20 md:max-h-24 lg:max-h-32 mb-2 md:mb-3 lg:mb-4">
                                 <p>{card.content}</p>
                               </div>
                               
                               {/* Footer Tag */}
                               <div className="text-xs text-purple-200/80 text-center">
-                                <span className="inline-block bg-white/10 px-3 py-1 rounded-full">
+                                <span className="inline-block bg-white/10 px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs">
                                   {card.recommend}
                                 </span>
                               </div>
@@ -693,8 +693,8 @@ const Results: React.FC = () => {
                       </div>
                     </>
                   ) : (
-                    <div className="max-w-[90%] px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-sm text-white border border-white/10">
-                      <p className="leading-relaxed text-sm">{msg.content}</p>
+                    <div className="max-w-[95%] md:max-w-[90%] px-3 md:px-4 py-2 md:py-3 rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm text-white border border-white/10">
+                      <p className="leading-relaxed text-xs md:text-sm">{msg.content}</p>
                     </div>
                   )}
                 </div>
@@ -703,10 +703,10 @@ const Results: React.FC = () => {
           ))}
           
           {loading && (
-            <div className="flex justify-start mb-4">
-              <div className="max-w-[90%] px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-sm text-white flex items-center gap-2">
-                <Loader2 className="animate-spin w-4 h-4" />
-                <span className="text-sm">AI 正在精心为你打造表达...</span>
+            <div className="flex justify-start mb-3 md:mb-4">
+              <div className="max-w-[95%] md:max-w-[90%] px-3 md:px-4 py-2 md:py-3 rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm text-white flex items-center gap-2">
+                <Loader2 className="animate-spin w-3 h-3 md:w-4 md:h-4" />
+                <span className="text-xs md:text-sm">AI 正在精心为你打造表达...</span>
               </div>
             </div>
           )}
@@ -716,46 +716,46 @@ const Results: React.FC = () => {
 
       {/* 错误提示 */}
       {error && (
-        <div className="text-red-400 text-center p-4 bg-red-500/10 rounded-lg border border-red-500/20 max-w-2xl mx-auto">
+        <div className="text-red-400 text-center p-3 md:p-4 bg-red-500/10 rounded-lg border border-red-500/20 max-w-full md:max-w-2xl mx-auto text-xs md:text-sm">
           {error}
         </div>
       )}
 
       {/* 控制面板 */}
-      <div className="space-y-4 max-w-2xl mx-auto">
+      <div className="space-y-3 md:space-y-4 max-w-full md:max-w-2xl mx-auto">
         {/* 回复模式选择 */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-          <span className="text-purple-300 text-sm font-medium">回复模式：</span>
+        <div className="flex flex-col gap-2 md:gap-4">
+          <span className="text-purple-300 text-xs md:text-sm font-medium">回复模式：</span>
           <div className="flex gap-2">
                     <button 
               onClick={() => setReplyMode('card')}
-              className={`px-4 py-2 rounded-lg text-sm transition-all ${
+              className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm transition-all ${
                 replyMode === 'card'
                   ? 'bg-purple-500/30 text-white border border-purple-400'
                   : 'bg-white/10 text-white/70 border border-white/10 hover:bg-white/20'
               }`}
               title="三种风格的表达优化"
             >
-              <Layout className="w-4 h-4 inline mr-2" />
+              <Layout className="w-3 h-3 md:w-4 md:h-4 inline mr-1 md:mr-2" />
               卡片式
                     </button>
                     <button 
               onClick={() => setReplyMode('chat')}
-              className={`px-4 py-2 rounded-lg text-sm transition-all ${
+              className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm transition-all ${
                 replyMode === 'chat'
                   ? 'bg-purple-500/30 text-white border border-purple-400'
                   : 'bg-white/10 text-white/70 border border-white/10 hover:bg-white/20'
               }`}
               title="单一风格的表达优化"
             >
-              <MessageSquare className="w-4 h-4 inline mr-2" />
+              <MessageSquare className="w-3 h-3 md:w-4 md:h-4 inline mr-1 md:mr-2" />
               聊天式
                     </button>
                   </div>
                   
           {replyMode === 'chat' && (
-            <div className="flex gap-2 ml-0 sm:ml-4">
-              <span className="text-purple-300 text-sm">风格：</span>
+            <div className="flex flex-wrap gap-2">
+              <span className="text-purple-300 text-xs md:text-sm">风格：</span>
               {[
                 { key: 'playful', label: '俏皮' },
                 { key: 'natural', label: '自然' },
@@ -764,7 +764,7 @@ const Results: React.FC = () => {
                     <button 
                   key={style.key}
                   onClick={() => setSelectedChatStyle(style.key as ChatStyle)}
-                  className={`px-3 py-1 rounded text-xs transition-all ${
+                  className={`px-2 md:px-3 py-1 rounded text-xs transition-all ${
                     selectedChatStyle === style.key
                       ? 'bg-purple-500/30 text-white'
                       : 'bg-white/10 text-white/70 hover:bg-white/20'
@@ -778,13 +778,13 @@ const Results: React.FC = () => {
         </div>
 
         {/* MBTI类型选择 */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-          <span className="text-purple-300 text-sm font-medium">MBTI类型：</span>
+        <div className="flex flex-col gap-2 md:gap-4">
+          <span className="text-purple-300 text-xs md:text-sm font-medium">MBTI类型：</span>
           <div className="relative">
             <select
               value={mbtiType}
               onChange={(e) => setMbtiType(e.target.value as MbtiType)}
-              className="w-full sm:w-auto px-4 py-2 rounded-lg text-sm bg-white/10 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400/50 appearance-none pr-8 hover:bg-white/20 transition-all"
+              className="w-full px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm bg-white/10 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400/50 appearance-none pr-8 hover:bg-white/20 transition-all"
               style={{ 
                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
                 color: 'white'
@@ -801,7 +801,7 @@ const Results: React.FC = () => {
               ))}
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-3 w-3 md:h-4 md:w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
@@ -810,30 +810,30 @@ const Results: React.FC = () => {
       </div>
       
       {/* 输入区域 */}
-      <div className="space-y-4 max-w-2xl mx-auto">
-        <form className="flex flex-col sm:flex-row gap-3" onSubmit={e => { e.preventDefault(); handleSend(); }}>
+      <div className="space-y-3 md:space-y-4 max-w-full md:max-w-2xl mx-auto">
+        <form className="flex flex-col gap-3" onSubmit={e => { e.preventDefault(); handleSend(); }}>
           <input
-            className="flex-1 rounded-xl px-6 py-4 bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400/50 border border-white/10 transition-all hover:bg-white/20 focus:bg-white/20"
+            className="w-full rounded-lg md:rounded-xl px-4 md:px-6 py-3 md:py-4 bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400/50 border border-white/10 transition-all hover:bg-white/20 focus:bg-white/20 text-sm md:text-base"
             placeholder={`输入需要优化的表达，获得${replyMode === 'card' ? '三种风格的' : '单一风格的'}优化建议...`}
             value={input}
             onChange={e => setInput(e.target.value)}
             disabled={loading}
           />
-          <div className="flex gap-3 sm:gap-2">
+          <div className="flex gap-2 md:gap-3">
             <Button
               type="primary"
-              icon={<Send className="w-5 h-5" />}
+              icon={<Send className="w-4 h-4 md:w-5 md:h-5" />}
               disabled={loading || !input.trim()}
-              className="flex-1 sm:flex-none px-8 py-4 text-lg transition-all hover:scale-105"
+              className="flex-1 px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg transition-all hover:scale-105"
             >
               发送
             </Button>
             <Button
               type="secondary"
-              icon={<RefreshCw className="w-5 h-5" />}
+              icon={<RefreshCw className="w-4 h-4 md:w-5 md:h-5" />}
               onClick={handleInitialGeneration}
               disabled={loading}
-              className="flex-1 sm:flex-none px-6 py-4 transition-all hover:scale-105"
+              className="flex-1 px-3 md:px-6 py-3 md:py-4 transition-all hover:scale-105"
             >
               重新生成
             </Button>
@@ -845,8 +845,8 @@ const Results: React.FC = () => {
         <Button 
           type="secondary" 
             onClick={() => navigate('/input-context')}
-          icon={<ArrowLeft className="w-4 h-4" />}
-            className="px-6 py-2 transition-all hover:scale-105"
+          icon={<ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />}
+            className="px-4 md:px-6 py-2 text-xs md:text-sm transition-all hover:scale-105"
         >
           返回
         </Button>
