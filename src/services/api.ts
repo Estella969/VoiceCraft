@@ -17,13 +17,13 @@ interface ApiResponse {
 }
 
 // 恢复原始配置：前端调用本地后端
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002';
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3002";
 
 export async function generateResponse(prompt: string): Promise<string> {
   try {
-    console.log('Calling backend API at:', `${API_BASE_URL}/api/ai`);
+    console.log('Calling backend API at:', '/api/ai');
     
-    const response = await fetch(`${API_BASE_URL}/api/ai`, {
+    const response = await fetch('/api/ai', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
