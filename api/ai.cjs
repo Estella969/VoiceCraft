@@ -10,10 +10,18 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { messages } = req.body;
-    
-    if (!messages || messages.length === 0) {
-      return res.status(400).json({ error: 'Messages are required' });
+    // 兼容旧格式和新格式
+    const { prompt, messages: incomingMessages, scene, lang, tone } = req.body;
+
+    let messages;
+
+    // 优先使用 prompt 构建 messages
+    if (prompt && typeof prompt === 'string') {
+      messages = [{ role: 'user', content: prompt }];
+    } else if (Array.isArray(incomingMessages) && incomingMessages.length > 0) {
+      messages = incomingMessages;
+    } else {
+      return res.status(400).json({ error: 'Request body must contain either "prompt" or "messages".' });
     }
     
     const openrouterApiKey = process.env.OPENROUTER_API_KEY;
