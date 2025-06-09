@@ -1,8 +1,8 @@
 // Converted from .js to .cjs
 //代码修改
-const axios = require('axios');
+import axios from 'axios';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // 只允许 POST 请求
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
@@ -56,4 +56,4 @@ module.exports = async (req, res) => {
       error: err.response?.data?.error?.message || 'Failed to fetch from AI service.' 
     });
   }
-}; 
+} 
