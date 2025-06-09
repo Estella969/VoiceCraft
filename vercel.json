@@ -1,0 +1,17 @@
+{
+  "functions": {
+    "api/ai.cjs": {
+      "memory": 1024
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/ai"
+    },
+    {
+      "source": "/((?!api/|assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
+} 
