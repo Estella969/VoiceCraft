@@ -16,23 +16,37 @@ const AppRoutes: React.FC = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [hasCompletedTest, setHasCompletedTest] = useState(false);
 
   useEffect(() => {
-    // 只在首次加载时检查用户状态
+    // 检查用户状态和测试完成状态
     const user = localStorage.getItem('currentUser');
+    const testCompleted = sessionStorage.getItem('testCompleted');
+    
     console.log('Initial load - Current path:', location.pathname);
     console.log('Initial load - User data from localStorage:', user);
+    console.log('Initial load - Test completed:', testCompleted);
     
-    if (user) {
+    if (user && testCompleted) {
       try {
         const userObj = JSON.parse(user);
-        console.log('Setting current user:', userObj);
+        console.log('Setting current user with test completed:', userObj);
         setCurrentUser(userObj);
+        setHasCompletedTest(true);
       } catch (e) {
         console.log('User data corrupted, clearing...');
         localStorage.removeItem('currentUser');
+        sessionStorage.removeItem('testCompleted');
         setCurrentUser(null);
+        setHasCompletedTest(false);
       }
+    } else {
+      // 清理无效状态
+      if (!testCompleted) {
+        localStorage.removeItem('currentUser');
+      }
+      setCurrentUser(null);
+      setHasCompletedTest(false);
     }
     setIsLoading(false);
   }, []); // 只在首次加载时执行
@@ -41,15 +55,20 @@ const AppRoutes: React.FC = () => {
   useEffect(() => {
     const handleStorageChange = () => {
       const user = localStorage.getItem('currentUser');
-      if (user) {
+      const testCompleted = sessionStorage.getItem('testCompleted');
+      
+      if (user && testCompleted) {
         try {
           const userObj = JSON.parse(user);
           setCurrentUser(userObj);
+          setHasCompletedTest(true);
         } catch (e) {
           setCurrentUser(null);
+          setHasCompletedTest(false);
         }
       } else {
         setCurrentUser(null);
+        setHasCompletedTest(false);
       }
     };
 
@@ -58,14 +77,19 @@ const AppRoutes: React.FC = () => {
     // 也监听自定义事件，用于同页面localStorage变化
     const checkUser = () => {
       const user = localStorage.getItem('currentUser');
-      if (user) {
+      const testCompleted = sessionStorage.getItem('testCompleted');
+      
+      if (user && testCompleted) {
         try {
           setCurrentUser(JSON.parse(user));
+          setHasCompletedTest(true);
         } catch (e) {
           setCurrentUser(null);
+          setHasCompletedTest(false);
         }
       } else {
         setCurrentUser(null);
+        setHasCompletedTest(false);
       }
     };
     
@@ -79,7 +103,7 @@ const AppRoutes: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-purple-900 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 text-white flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-purple-300">载入中...</p>
@@ -92,7 +116,7 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/mbti-test" element={<Layout><MbtiTest /></Layout>} />
-      {currentUser ? (
+      {currentUser && hasCompletedTest ? (
         <Route
           path="/*"
           element={

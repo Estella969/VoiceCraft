@@ -26,19 +26,22 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const [selectedMbti, setSelectedMbti] = useState('');
 
-  // 每次进入登录页都清空localStorage和上下文
+  // 每次进入登录页都清空localStorage和sessionStorage
   React.useEffect(() => {
     localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('testCompleted');
     setSelectedMbti(''); // 强制清空选择
   }, []);
 
   const handleMbtiSelect = () => {
     if (!selectedMbti) return;
     console.log('Selected MBTI:', selectedMbti);
-    // 保存MBTI类型，直接进入场景选择
+    // 保存MBTI类型并标记测试完成
     const userData = { mbti: selectedMbti };
     localStorage.setItem('currentUser', JSON.stringify(userData));
+    sessionStorage.setItem('testCompleted', 'true');
     console.log('Saved user data:', userData);
+    console.log('Marked test as completed');
     
     // 触发用户状态更新事件
     window.dispatchEvent(new Event('userChanged'));
@@ -50,42 +53,43 @@ const Login: React.FC = () => {
   const handleOnlineTest = () => {
     // 清理之前数据，进入在线测试
     localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('testCompleted');
     navigate('/mbti-test');
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#2e026d] via-[#15162c] to-[#0f172a] px-4">
+    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-purple-900 via-slate-800 via-purple-800 to-slate-900 px-3 sm:px-4">
       {/* 动态光斑背景 */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute left-1/4 top-1/4 w-64 h-64 md:w-96 md:h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute right-1/4 bottom-1/4 w-48 h-48 md:w-80 md:h-80 bg-blue-400/20 rounded-full blur-2xl animate-pulse delay-200" />
-        <div className="absolute left-1/2 top-2/3 w-40 h-40 md:w-72 md:h-72 bg-pink-400/20 rounded-full blur-2xl animate-pulse delay-500" />
+        <div className="absolute left-1/4 top-1/4 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute right-1/4 bottom-1/4 w-32 h-32 sm:w-48 sm:h-48 md:w-80 md:h-80 bg-blue-400/20 rounded-full blur-2xl animate-pulse delay-200" />
+        <div className="absolute left-1/2 top-2/3 w-28 h-28 sm:w-40 sm:h-40 md:w-72 md:h-72 bg-pink-400/20 rounded-full blur-2xl animate-pulse delay-500" />
       </div>
       
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* 顶部标题 */}
-        <div className="mb-8 flex flex-col items-center">
-          <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 p-3 rounded-full shadow-lg mb-4 animate-fade-in">
-            <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-white drop-shadow" />
+        <div className="mb-6 sm:mb-8 flex flex-col items-center">
+          <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 p-2.5 sm:p-3 rounded-full shadow-lg mb-3 sm:mb-4 animate-fade-in">
+            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-white drop-shadow" />
           </div>
-          <h1 className="text-2xl md:text-4xl font-extrabold text-center text-white tracking-tight animate-fade-in" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' }}>
+          <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold text-center text-white tracking-tight animate-fade-in" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' }}>
             Welcome to VoiceCraft
           </h1>
-          <p className="mt-2 text-purple-200 text-center text-sm md:text-base animate-fade-in delay-200">
+          <p className="mt-2 text-purple-200 text-center text-xs sm:text-sm md:text-base animate-fade-in delay-200">
             一键生成专属表达
           </p>
         </div>
 
         {/* 主卡片 */}
-        <div className="rounded-3xl shadow-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-6 md:p-8 animate-fade-in-up">
-          <div className="text-center mb-6">
-            <h2 className="text-lg md:text-xl font-bold text-white mb-2">选择你的MBTI类型</h2>
-            <p className="text-purple-200 text-sm">快速开始个性化表达体验</p>
+        <div className="rounded-2xl sm:rounded-3xl shadow-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-4 sm:p-6 md:p-8 animate-fade-in-up">
+          <div className="text-center mb-4 sm:mb-6">
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-white mb-2">选择你的MBTI类型</h2>
+            <p className="text-purple-200 text-xs sm:text-sm">快速开始个性化表达体验</p>
           </div>
           
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <select
-              className="w-full p-3 md:p-4 rounded-xl bg-white/10 text-white focus:ring-2 focus:ring-purple-400/50 transition-all text-center text-sm md:text-base"
+              className="w-full p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl bg-white/10 text-white focus:ring-2 focus:ring-purple-400/50 transition-all text-center text-xs sm:text-sm md:text-base"
               value={selectedMbti}
               onChange={e => setSelectedMbti(e.target.value)}
               style={{ 
@@ -112,7 +116,7 @@ const Login: React.FC = () => {
             fullWidth 
             onClick={handleMbtiSelect} 
             disabled={!selectedMbti}
-            className="text-base md:text-lg py-3 md:py-4 rounded-xl shadow-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 mb-4"
+            className="text-sm sm:text-base md:text-lg py-2.5 sm:py-3 md:py-4 rounded-lg sm:rounded-xl shadow-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 mb-3 sm:mb-4"
           >
             进入场景选择
           </Button>
@@ -129,7 +133,7 @@ const Login: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-6 md:mt-8 text-center text-xs text-purple-300/60 animate-fade-in-up delay-300">
+        <div className="mt-4 sm:mt-6 md:mt-8 text-center text-xs text-purple-300/60 animate-fade-in-up delay-300">
           <span>© 2024 VoiceCraft. All rights reserved.</span>
         </div>
       </div>

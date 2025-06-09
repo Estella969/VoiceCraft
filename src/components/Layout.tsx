@@ -12,7 +12,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { currentStep } = useAppContext();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-purple-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-slate-800 via-purple-800 to-slate-900 text-white">
       <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-6 flex flex-col min-h-screen max-w-3xl">
         <header className="flex items-center justify-between mb-4 sm:mb-8">
           <div 

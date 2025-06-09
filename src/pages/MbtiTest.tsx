@@ -40,10 +40,12 @@ const MbtiTest: React.FC = () => {
   
   const handleContinue = () => {
     console.log('Test result:', resultType);
-    // 保存MBTI测试结果，直接进入场景选择
+    // 保存MBTI测试结果并标记测试完成，直接进入场景选择
     const userData = { mbti: resultType };
     localStorage.setItem('currentUser', JSON.stringify(userData));
+    sessionStorage.setItem('testCompleted', 'true');
     console.log('Saved test result:', userData);
+    console.log('Marked test as completed');
     
     // 触发用户状态更新事件
     window.dispatchEvent(new Event('userChanged'));
