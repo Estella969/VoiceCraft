@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import Layout from './components/Layout';
+import LandingPage from './pages/LandingPage';
 import MbtiTest from './pages/MbtiTest';
 import SceneSelection from './pages/SceneSelection';
 import ToneAdjustment from './pages/ToneAdjustment';
@@ -10,6 +11,9 @@ import Results from './pages/Results';
 import Favorites from './pages/Favorites';
 import History from './pages/History';
 import Login from './pages/Login';
+import About from './pages/About';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from './pages/TermsOfUse';
 
 const AppRoutes: React.FC = () => {
   const navigate = useNavigate();
@@ -114,15 +118,19 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsOfUse />} />
       <Route path="/mbti-test" element={<Layout><MbtiTest /></Layout>} />
       {currentUser && hasCompletedTest ? (
         <Route
-          path="/*"
+          path="/app/*"
           element={
         <Layout>
           <Routes>
-                <Route path="/" element={<SceneSelection />} />
+            <Route path="/" element={<SceneSelection />} />
             <Route path="/scene-selection" element={<SceneSelection />} />
             <Route path="/tone-adjustment" element={<ToneAdjustment />} />
             <Route path="/input-context" element={<InputContext />} />
@@ -133,9 +141,7 @@ const AppRoutes: React.FC = () => {
         </Layout>
           }
         />
-      ) : (
-        <Route path="*" element={<Login />} />
-      )}
+      ) : null}
     </Routes>
   );
 };

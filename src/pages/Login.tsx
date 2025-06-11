@@ -46,8 +46,8 @@ const Login: React.FC = () => {
     // 触发用户状态更新事件
     window.dispatchEvent(new Event('userChanged'));
     
-    console.log('Navigating to scene-selection...');
-    navigate('/scene-selection');
+    console.log('Navigating to app/scene-selection...');
+    navigate('/app/scene-selection');
   };
 
   const handleOnlineTest = () => {
