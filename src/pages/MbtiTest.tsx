@@ -134,7 +134,7 @@ const MbtiTest: React.FC = () => {
         <div className="space-y-3 md:space-y-4 lg:space-y-6">
           <GlassCard 
             className="hover:bg-white/20 transition-colors cursor-pointer min-h-[60px] md:min-h-[80px] lg:min-h-[100px] flex items-center p-4 md:p-5 lg:p-6"
-            onClick={() => handleAnswer('a')} 
+            onClick={() => handleAnswer('a')}
           >
             <div className="flex items-center w-full">
               <div className="mr-3 md:mr-4 lg:mr-6 w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 rounded-full border-2 border-purple-400 flex items-center justify-center shrink-0 text-sm md:text-base lg:text-lg font-semibold">
