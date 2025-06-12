@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext, MbtiType, SceneType } from '../context/AppContext';
+import { useAppContext, MbtiType, SceneType, GeneratedText } from '../context/AppContext';
 import GlassCard from '../components/GlassCard';
 import Button from '../components/Button';
 import { fetchAIResult } from '../services/aiService';
 import { v4 as uuidv4 } from 'uuid';
-import { ArrowLeft, Sparkles, Send, Loader2, Copy, Heart, RefreshCw, MessageSquare, Layout } from 'lucide-react';
+import { ArrowLeft, Sparkles, Send, Loader2, Copy, Heart, RefreshCw, MessageSquare, Layout, Check } from 'lucide-react';
 import { scenes } from '../data/scenes';
 
 interface StyleCard {
@@ -37,6 +37,8 @@ const Results: React.FC = () => {
     toneSettings,
     contextInput,
     setMbtiType,
+    favorites,
+    addToFavorites,
   } = useAppContext();
   
   // 多轮对话消息流
@@ -45,6 +47,7 @@ const Results: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [favoritedIds, setFavoritedIds] = useState<Set<string>>(new Set());
   const [replyMode, setReplyMode] = useState<ReplyMode>('card');
   const [selectedChatStyle, setSelectedChatStyle] = useState<ChatStyle>('natural');
   const [showButtons, setShowButtons] = useState<Record<string, boolean>>({});
@@ -84,6 +87,20 @@ const Results: React.FC = () => {
     if (mood.includes('激动') || title.includes('激动') || mood.includes('passionate') || title.includes('情感')) return 'passionate';
     
     return 'natural'; // 默认或 "自然"
+  };
+
+  const handleMbtiChange = (newType: MbtiType) => {
+    if (newType === '在线测试') {
+      navigate('/mbti-test');
+    } else {
+      setMbtiType(newType);
+    }
+  };
+
+  const handleRegenerate = () => {
+    if (messages.length > 0 && messages[0].isInitial) {
+      handleInitialGeneration();
+    }
   };
 
   // 获取简短犀利推荐语
@@ -597,20 +614,84 @@ const Results: React.FC = () => {
       default: return 'from-purple-500/25 to-blue-500/25';
     }
   };
+
+  const handleFavorite = (card: StyleCard) => {
+    const newFavorite: GeneratedText = {
+      id: card.id,
+      text: card.content,
+      tone: toneSettings,
+      isFavorite: true,
+      createdAt: new Date(),
+      category: selectedScene || 'other',
+    };
+    addToFavorites(newFavorite);
+    setFavoritedIds(prev => new Set(prev).add(card.id));
+  };
   
   return (
-    <div className="max-w-4xl mx-auto min-h-screen py-4 md:py-6 lg:py-10 px-3 md:px-6 lg:px-0 space-y-6 md:space-y-8 lg:space-y-16">
-      {/* Header 模块 */}
-      <header className="text-center space-y-2 md:space-y-4 animate-fadeDown">
-        <div className="space-y-1 md:space-y-2">
-          <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' }}>
-          像自己"又"比自己更会说
-          </h1>
-          <h2 className="text-sm md:text-base lg:text-lg text-white/90" style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.6)' }}>
-            基于 {mbtiType} 性格特质 · {scenes.find(s => s.id === selectedScene)?.title || '日常表达'} 场景
-          </h2>
-        </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8">
+      {/* 恢复的 Header */}
+      <header className="text-center space-y-2 md:space-y-4 mb-8">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white">
+          像自己，又比自己更会说
+        </h1>
+        <h2 className="text-sm md:text-base lg:text-lg text-white/80">
+          基于 {mbtiType} 性格特质 · {scenes.find(s => s.id === selectedScene)?.title || '日常表达'} 场景
+        </h2>
       </header>
+
+      {/* 重新设计的控件区域 */}
+      <div className="flex flex-col md:flex-row items-start md:items-end gap-4 md:gap-6 mb-8 p-4 bg-slate-800/50 rounded-xl border border-white/10">
+        <div className="w-full md:w-auto">
+          <label className="block text-sm font-medium text-gray-300 mb-2 text-left">回复模式</label>
+          <div className="flex items-center bg-slate-700/50 p-1 rounded-lg">
+            <Button
+              type={replyMode === 'card' ? 'primary' : 'secondary'}
+              onClick={() => setReplyMode('card')}
+              icon={<Layout className="w-4 h-4" />}
+              className="flex-1 !py-2 !px-3"
+            >
+              卡片
+            </Button>
+            <Button
+              type={replyMode === 'chat' ? 'primary' : 'secondary'}
+              onClick={() => setReplyMode('chat')}
+              icon={<MessageSquare className="w-4 h-4" />}
+              className="flex-1 !py-2 !px-3"
+            >
+              聊天
+            </Button>
+          </div>
+        </div>
+        
+        <div className="w-full md:w-auto">
+          <label className="block text-sm font-medium text-gray-300 mb-2 text-left">MBTI 类型</label>
+          <select
+            value={mbtiType || ''}
+            onChange={(e) => handleMbtiChange(e.target.value as MbtiType)}
+            className="w-full bg-slate-700/50 text-white border border-transparent rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500"
+          >
+            {mbtiOptions.map(option => (
+              <option key={option} value={option} className="bg-slate-800">
+                {option === '在线测试' ? '重新测试' : option}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex-grow"></div>
+
+        <div className="w-full md:w-auto">
+          <Button
+            onClick={handleRegenerate}
+            icon={<RefreshCw className="w-4 h-4" />}
+            className="!py-2"
+            fullWidth
+          >
+            重新生成
+          </Button>
+        </div>
+      </div>
 
       {/* 对话窗格 - 响应式设计 */}
       <div className="flex justify-center">
@@ -627,16 +708,16 @@ const Results: React.FC = () => {
           <div className="absolute inset-x-0 top-0 h-px bg-white/10"></div>
           
           {messages.map(msg => (
-            <div key={msg.id} className={`mb-3 md:mb-4 lg:mb-6 ${msg.role === 'user' ? 'flex justify-end' : ''}`}>
+            <div key={msg.id} className={`mb-3 md:mb-4 lg:mb-6 flex justify-start`}>
               {msg.role === 'user' ? (
-                <div className="max-w-[85%] md:max-w-[80%] px-3 md:px-4 py-2 md:py-3 rounded-xl md:rounded-2xl bg-gradient-to-r from-purple-500/90 to-blue-500/90 text-white shadow-lg md:shadow-xl border border-white/20 text-xs md:text-sm">
+                <div className="text-left max-w-[85%] md:max-w-[80%] px-3 md:px-4 py-2 md:py-3 rounded-xl md:rounded-2xl bg-gradient-to-r from-purple-500/90 to-blue-500/90 text-white shadow-lg md:shadow-xl border border-white/20 text-xs md:text-sm">
                   {msg.content}
-      </div>
+                </div>
               ) : (
-                <div className="max-w-full">
+                <div className="max-w-full w-full">
                   {msg.styleCards ? (
                     <>
-                      <div className="mb-2 md:mb-4 text-purple-200 font-medium text-xs md:text-sm">{msg.content}</div>
+                      <div className="text-left mb-2 md:mb-4 text-purple-200 font-medium text-xs md:text-sm">{msg.content}</div>
                       
                       {/* StyleCard 网格 - 移动优先响应式设计 */}
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3 lg:gap-4">
@@ -650,8 +731,8 @@ const Results: React.FC = () => {
                               <div className="flex items-center justify-between mb-2 md:mb-3 lg:mb-4">
                                 <div className="flex items-center">
                                   <h3 className="font-semibold text-white text-xs md:text-sm lg:text-base">{card.title}</h3>
-      </div>
-      
+                                </div>
+                                
                                 {/* 操作按钮组 */}
                                 <div className={`flex gap-1 transition-opacity duration-200 ${showButtons[card.id] ? 'opacity-100' : 'opacity-100 md:opacity-60 lg:group-hover:opacity-100'}`}>
                                   <button 
@@ -667,11 +748,13 @@ const Results: React.FC = () => {
                                     )}
                                   </button>
                                   <button 
+                                    onClick={() => handleFavorite(card)}
+                                    disabled={favoritedIds.has(card.id) || favorites.some(f => f.id === card.id)}
                                     className="p-1.5 md:p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-200" 
                                     title="收藏表达"
                                     aria-label="收藏表达"
                                   >
-                                    <Heart className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
+                                    <Heart className={`w-2.5 h-2.5 md:w-3 md:h-3 ${favoritedIds.has(card.id) || favorites.some(f => f.id === card.id) ? 'text-pink-500 fill-current' : 'text-white'}`} />
                                   </button>
                                 </div>
                               </div>
@@ -721,142 +804,45 @@ const Results: React.FC = () => {
         </div>
       )}
 
-      {/* 控制面板 */}
-      <div className="space-y-3 md:space-y-4 max-w-full md:max-w-2xl mx-auto">
-        {/* 回复模式选择 */}
-        <div className="flex flex-col gap-2 md:gap-4">
-          <span className="text-purple-300 text-xs md:text-sm font-medium">回复模式：</span>
-          <div className="flex gap-2">
-                    <button 
-              onClick={() => setReplyMode('card')}
-              className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm transition-all ${
-                replyMode === 'card'
-                  ? 'bg-purple-500/30 text-white border border-purple-400'
-                  : 'bg-white/10 text-white/70 border border-white/10 hover:bg-white/20'
-              }`}
-              title="三种风格的表达优化"
-            >
-              <Layout className="w-3 h-3 md:w-4 md:h-4 inline mr-1 md:mr-2" />
-              卡片式
-                    </button>
-                    <button 
-              onClick={() => setReplyMode('chat')}
-              className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm transition-all ${
-                replyMode === 'chat'
-                  ? 'bg-purple-500/30 text-white border border-purple-400'
-                  : 'bg-white/10 text-white/70 border border-white/10 hover:bg-white/20'
-              }`}
-              title="单一风格的表达优化"
-            >
-              <MessageSquare className="w-3 h-3 md:w-4 md:h-4 inline mr-1 md:mr-2" />
-              聊天式
-                    </button>
-                  </div>
-                  
-          {replyMode === 'chat' && (
-            <div className="flex flex-wrap gap-2">
-              <span className="text-purple-300 text-xs md:text-sm">风格：</span>
-              {[
-                { key: 'playful', label: '俏皮' },
-                { key: 'natural', label: '自然' },
-                { key: 'passionate', label: '激动' }
-              ].map(style => (
-                    <button 
-                  key={style.key}
-                  onClick={() => setSelectedChatStyle(style.key as ChatStyle)}
-                  className={`px-2 md:px-3 py-1 rounded text-xs transition-all ${
-                    selectedChatStyle === style.key
-                      ? 'bg-purple-500/30 text-white'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20'
-                  }`}
-                >
-                  {style.label}
-                    </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* MBTI类型选择 */}
-        <div className="flex flex-col gap-2 md:gap-4">
-          <span className="text-purple-300 text-xs md:text-sm font-medium">MBTI类型：</span>
-          <div className="relative">
-            <select
-              value={mbtiType}
-              onChange={(e) => setMbtiType(e.target.value as MbtiType)}
-              className="w-full px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm bg-white/10 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400/50 appearance-none pr-8 hover:bg-white/20 transition-all"
-              style={{ 
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                color: 'white'
-              }}
-            >
-              {mbtiOptions.map((type) => (
-                <option 
-                  key={type} 
-                  value={type}
-                  style={{ backgroundColor: '#1f2937', color: 'white' }}
-                >
-                  {type}
-                </option>
-              ))}
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <svg className="h-3 w-3 md:h-4 md:w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-                  </div>
-                </div>
-      </div>
-      
-      {/* 输入区域 */}
-      <div className="space-y-3 md:space-y-4 max-w-full md:max-w-2xl mx-auto">
+      {/* 底部输入区域和按钮 - Restored to bottom */}
+      <div className="mt-auto pt-6 max-w-full md:max-w-4xl mx-auto">
         <form className="flex flex-col gap-3" onSubmit={e => { e.preventDefault(); handleSend(); }}>
-          <input
-            className="w-full rounded-lg md:rounded-xl px-4 md:px-6 py-3 md:py-4 bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400/50 border border-white/10 transition-all hover:bg-white/20 focus:bg-white/20 text-sm md:text-base"
-            placeholder={`输入需要优化的表达，获得${replyMode === 'card' ? '三种风格的' : '单一风格的'}优化建议...`}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            disabled={loading}
-          />
-          <div className="flex gap-2 md:gap-3">
-            <Button
-              type="primary"
-              icon={<Send className="w-4 h-4 md:w-5 md:h-5" />}
-              disabled={loading || !input.trim()}
-              className="flex-1 px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg transition-all hover:scale-105"
-            >
-              发送
-            </Button>
-            <Button
-              type="secondary"
-              icon={<RefreshCw className="w-4 h-4 md:w-5 md:h-5" />}
-              onClick={handleInitialGeneration}
+          <div className="relative flex items-center">
+            <input
+              className="w-full rounded-lg md:rounded-xl px-4 md:px-6 py-3 md:py-4 bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400/50 border border-white/10 transition-all hover:bg-white/20 focus:bg-white/20 text-sm md:text-base pr-20"
+              placeholder={`输入需要优化的表达...`}
+              value={input}
+              onChange={e => setInput(e.target.value)}
               disabled={loading}
-              className="flex-1 px-3 md:px-6 py-3 md:py-4 transition-all hover:scale-105"
+            />
+            <button
+              type="submit"
+              disabled={loading || !input.trim()}
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-purple-600/80 hover:bg-purple-700/80 text-white p-2 rounded-lg disabled:bg-gray-500/50 transition-colors"
+              aria-label="发送"
             >
-              重新生成
-            </Button>
+              <Send className="w-4 h-4 md:w-5 md:h-5" />
+            </button>
           </div>
         </form>
         
         {/* 底部返回按钮 */}
         <div className="flex justify-center gap-4 pt-4">
-        <Button 
-          type="secondary" 
-            onClick={() => navigate('/input-context')}
-          icon={<ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />}
+          <Button 
+            type="secondary" 
+            onClick={() => navigate('/app/input-context')}
+            icon={<ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />}
             className="px-4 md:px-6 py-2 text-xs md:text-sm transition-all hover:scale-105"
-        >
-          返回
-        </Button>
-        <Button 
+          >
+            返回
+          </Button>
+          <Button 
             type="secondary"
             onClick={() => {localStorage.removeItem('currentUser'); navigate('/login');}}
-            className="px-6 py-2 transition-all hover:scale-105"
+            className="px-4 md:px-6 py-2 text-xs md:text-sm transition-all hover:scale-105"
           >
             回到登录
-        </Button>
+          </Button>
         </div>
       </div>
     </div>

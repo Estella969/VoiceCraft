@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { MicIcon, BookmarkIcon, ClockIcon } from 'lucide-react';
+import { MicIcon, BookmarkIcon, ClockIcon, Heart } from 'lucide-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -26,16 +26,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
           <div className="flex gap-2 md:gap-3 lg:gap-4">
             <button 
-              onClick={() => navigate('/favorites')}
-              className="p-2 md:p-2.5 lg:p-3 rounded-full hover:bg-white/10 transition-colors"
+              onClick={() => navigate('/app/favorites')}
+              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
             >
-              <BookmarkIcon className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-purple-300" />
+              <Heart className="w-4 h-4" />
+              <span className="text-sm">收藏</span>
             </button>
+            
             <button 
-              onClick={() => navigate('/history')}
-              className="p-2 md:p-2.5 lg:p-3 rounded-full hover:bg-white/10 transition-colors"
+              onClick={() => navigate('/app/history')}
+              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
             >
-              <ClockIcon className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-purple-300" />
+              <ClockIcon className="w-4 h-4" />
+              <span className="text-sm">历史</span>
             </button>
           </div>
         </header>

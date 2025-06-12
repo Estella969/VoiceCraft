@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-export type MbtiType = 'INTJ' | 'INTP' | 'ENTJ' | 'ENTP' | 'INFJ' | 'INFP' | 'ENFJ' | 'ENFP' | 'ISTJ' | 'ISFJ' | 'ESTJ' | 'ESFJ' | 'ISTP' | 'ISFP' | 'ESTP' | 'ESFP' | '';
+export type MbtiType = 'INTJ' | 'INTP' | 'ENTJ' | 'ENTP' | 'INFJ' | 'INFP' | 'ENFJ' | 'ENFP' | 'ISTJ' | 'ISFJ' | 'ESTJ' | 'ESFJ' | 'ISTP' | 'ISFP' | 'ESTP' | 'ESFP' | '' | '在线测试';
 
 export type SceneType = 'friends' | 'daily' | 'relationship' | 'workplace';
 
@@ -33,9 +33,12 @@ interface AppContextType {
   generatedTexts: GeneratedText[];
   setGeneratedTexts: (texts: GeneratedText[]) => void;
   favorites: GeneratedText[];
+  favoriteTexts: GeneratedText[];
   addToFavorites: (text: GeneratedText) => void;
   removeFromFavorites: (id: string) => void;
+  removeFavorite: (id: string) => void;
   history: GeneratedText[];
+  historyTexts: GeneratedText[];
   addToHistory: (text: GeneratedText) => void;
 }
 
@@ -125,9 +128,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         generatedTexts,
         setGeneratedTexts,
         favorites,
+        favoriteTexts: favorites,
         addToFavorites,
         removeFromFavorites,
+        removeFavorite: removeFromFavorites,
         history,
+        historyTexts: history,
         addToHistory,
       }}
     >

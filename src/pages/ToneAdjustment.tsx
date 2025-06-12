@@ -27,12 +27,12 @@ const ToneAdjustment: React.FC = () => {
   
   const handleContinue = () => {
     setCurrentStep(4);
-    navigate('/input-context');
+    navigate('/app/input-context');
   };
   
   const handleBack = () => {
     setCurrentStep(2);
-    navigate('/scene-selection');
+    navigate('/app/scene-selection');
   };
   
   const getEmotionLevelDescription = (level: number) => {

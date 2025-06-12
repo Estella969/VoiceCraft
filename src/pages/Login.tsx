@@ -134,7 +134,7 @@ const Login: React.FC = () => {
         </div>
 
         <div className="mt-4 md:mt-6 lg:mt-8 xl:mt-10 text-center text-xs md:text-sm lg:text-base text-purple-300/60 animate-fade-in-up delay-300">
-          <span>© 2024 VoiceCraft. All rights reserved.</span>
+          <span>© 2025 VoiceCraft. All rights reserved.</span>
         </div>
       </div>
       

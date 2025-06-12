@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext, GeneratedText } from '../context/AppContext';
 import GlassCard from '../components/GlassCard';
 import Button from '../components/Button';
-import { ArrowLeft, Clock, Copy, Check, RefreshCw, Heart } from 'lucide-react';
+import { ArrowLeft, Clock, Copy, Check, RefreshCw, Heart, Plus } from 'lucide-react';
 
 const History: React.FC = () => {
   const navigate = useNavigate();
@@ -31,9 +31,9 @@ const History: React.FC = () => {
     }
   };
   
-  const handleReuseText = (text: string) => {
-    setContextInput(text);
-    navigate('/input-context');
+  const handleUseAgain = (text: GeneratedText) => {
+    setContextInput(text.text);
+    navigate('/app/input-context');
   };
   
   // Group history by date
@@ -66,10 +66,11 @@ const History: React.FC = () => {
             你还没有生成过任何表达。
           </p>
           <Button 
-            onClick={() => navigate('/input-context')}
-            icon={<RefreshCw className="w-4 h-4" />}
+            onClick={() => navigate('/app/input-context')}
+            icon={<Plus className="w-4 h-4 md:w-5 md:h-5" />}
+            className="text-sm md:text-base py-2 md:py-3 px-4 md:px-6 transition-all hover:scale-105"
           >
-            去生成表达
+            新的表达
           </Button>
         </GlassCard>
       ) : (
@@ -111,7 +112,7 @@ const History: React.FC = () => {
                       
                       <Button 
                         type="secondary"
-                        onClick={() => handleReuseText(item.text)}
+                        onClick={() => handleUseAgain(item)}
                       >
                         重新使用
                       </Button>

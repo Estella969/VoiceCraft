@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext, GeneratedText } from '../context/AppContext';
 import GlassCard from '../components/GlassCard';
 import Button from '../components/Button';
-import { ArrowLeft, Bookmark, Copy, Check, Trash, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Bookmark, Copy, Check, Trash, RefreshCw, Plus } from 'lucide-react';
 import { scenes } from '../data/scenes';
 
 const Favorites: React.FC = () => {
@@ -23,7 +23,7 @@ const Favorites: React.FC = () => {
   
   const handleReuseText = (text: string) => {
     setContextInput(text);
-    navigate('/input-context');
+    navigate('/app/input-context');
   };
   
   // Group favorites by scene
@@ -56,10 +56,11 @@ const Favorites: React.FC = () => {
             你还没有收藏任何表达。生成表达后，点击心形图标进行收藏。
           </p>
           <Button 
-            onClick={() => navigate('/input-context')}
-            icon={<RefreshCw className="w-4 h-4" />}
+            onClick={() => navigate('/app/input-context')}
+            icon={<Plus className="w-4 h-4 md:w-5 md:h-5" />}
+            className="text-sm md:text-base py-2 md:py-3 px-4 md:px-6 transition-all hover:scale-105"
           >
-            去生成表达
+            新的表达
           </Button>
         </GlassCard>
       ) : (
